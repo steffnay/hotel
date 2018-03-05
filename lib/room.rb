@@ -9,9 +9,9 @@ module Hotel
       @price = 200
       @reservations = []
 
-    @@array << {room: @room_number, price: @price, reservations: @reservations}
+      @@array << {room: @room_number, price: @price, reservations: @reservations}
 
-     return @room_number
+      return @room_number
     end
   end
 end
