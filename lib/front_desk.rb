@@ -1,4 +1,5 @@
 require_relative '../lib/room.rb'
+require_relative '../lib/reservation.rb'
 
 module Hotel
   class FrontDesk
@@ -30,8 +31,11 @@ module Hotel
 
       return list
     end
+
+    def reserve(room_number, start_date, end_date)
+      new = Hotel::Reservation.new(room_number, start_date, end_date)
+      return new
+    end
+
   end
 end
-
-newby = Hotel::FrontDesk.new
-newby.list

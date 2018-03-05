@@ -1,7 +1,18 @@
 module Hotel
   class Reservation
 
-    # def initialize
-    # end
+    attr_reader :room
+    
+    def initialize(room, start_date, end_date)
+      @room = room
+      @start_date = start_date
+      @end_date = end_date
+
+      make_new
+    end
+
+    def make_new
+      reservation = [@room, @start_date, @end_date]
+    end
   end
 end
