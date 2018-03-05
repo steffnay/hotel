@@ -10,15 +10,28 @@ module Hotel
     end
 
     def load_rooms
-      all_rooms = []
+      @room_array = []
 
       20.times do |i|
         i+= 1
         room = Hotel::Room.new(i)
-        all_rooms << room
+        @room_array << room
       end
 
-      return all_rooms
+      return @room_array
+    end
+
+    def list
+      list = []
+      @room_array.each do |room|
+        number = "Room #{room.room_number}"
+      list << number
+      end
+
+      return list
     end
   end
 end
+
+newby = Hotel::FrontDesk.new
+newby.list

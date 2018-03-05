@@ -13,7 +13,12 @@ describe "Front Desk class" do
       desk.all_rooms.must_be_kind_of Array
       desk.all_rooms.length.must_equal 20
     end
+  end
 
-
+  describe "list rooms" do
+    it "lists all the rooms in hotel" do
+      desk = Hotel::FrontDesk.new
+      desk.list.must_include "Room 2"
+    end
   end
 end
