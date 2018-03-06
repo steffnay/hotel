@@ -32,6 +32,10 @@ module Hotel
       return list
     end
 
+    def all_reservations
+     return Hotel::Reservation.all
+    end
+
     def reserve(room_number, start_date, end_date)
       new = Hotel::Reservation.new(room_number, start_date, end_date)
       return new

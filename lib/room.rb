@@ -4,7 +4,7 @@ require 'pry'
 
 module Hotel
   class Room
-    attr_reader :room_number, :price, :reservations
+    attr_reader :room_number, :price, :reservations, :array
     attr_accessor :reservation_info
 
     @@array = []
@@ -28,6 +28,6 @@ module Hotel
     end
   end
 end
-
-something = Hotel::Room.new(600)
-ap something.add_new(600, 2020-02-24, 2020-02-28)
+#
+# something = Hotel::Room.new(600)
+# ap something.add_new(600, "2020-02-24", "2020-02-28")
