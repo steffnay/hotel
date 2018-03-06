@@ -5,12 +5,10 @@ require 'awesome_print'
 module Hotel
   class Reservation
 
-    attr_reader :room, :start_date, :end_date
+    attr_reader :id, :room, :start_date, :end_date
 
-
-
-
-    def initialize(room, start_date, end_date)
+    def initialize(id, room, start_date, end_date)
+      @id = id
       @room = room
       @start_date = DateTime.parse(start_date)
       @end_date = DateTime.parse(end_date)
@@ -19,7 +17,7 @@ module Hotel
     end
 
     def make_new
-      reservation = [@room, @start_date, @end_date]
+      reservation = [@id, @room, @start_date, @end_date]
     end
 
     def self.get_by_date(date)
@@ -46,8 +44,8 @@ module Hotel
   end
 end
 
-new_reservation = Hotel::Reservation.new(5,"2020-02-24", "2020-02-28")
-new_reservation2 = Hotel::Reservation.new(3,"2020-02-23", "2020-02-26")
+new_reservation = Hotel::Reservation.new(100, 5,"2020-02-24", "2020-02-28")
+new_reservation2 = Hotel::Reservation.new(200, 3,"2020-02-23", "2020-02-26")
 
 # reservation_list = Hotel::Reservation.get_by_date("2020-02-25")
 

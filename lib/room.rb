@@ -19,11 +19,13 @@ module Hotel
       return @room_number
     end
 
-    def add_new(room, start_date, end_date)
-      newby = Hotel::Reservation.new(room, start_date, end_date)
+    def add_new(id, room, start_date, end_date)
+      newby = Hotel::Reservation.new(id, room, start_date, end_date)
 
       reservation_info = @@array.select {|num| num[:room] == room}
+      binding.pry
       reservation_info[0][:reservations] << newby
+      binding.pry
 
     end
   end

@@ -25,7 +25,7 @@ describe "Front Desk class" do
   describe "reserve" do
     it "creates a new reservation" do
       desk = Hotel::FrontDesk.new
-      new_reservation = desk.reserve(1, "2020-05-24", "2020-05-28")
+      new_reservation = desk.reserve(444, 1, "2020-05-24", "2020-05-28")
       new_reservation.must_be_kind_of Hotel::Reservation
       new_reservation.room.must_equal 1
     end
@@ -34,7 +34,7 @@ describe "Front Desk class" do
   describe "retrieve_reservation" do
     it "returns all reservations for given date" do
       desk = Hotel::FrontDesk.new
-      new_reservation = desk.reserve(1, "2020-05-24", "2020-05-28")
+      new_reservation = desk.reserve(555, 1, "2020-05-24", "2020-05-28")
       testing = desk.retrieve_reservation("2020-05-26")
       testing.must_include new_reservation
     end

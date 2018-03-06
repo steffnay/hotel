@@ -36,8 +36,8 @@ module Hotel
      Hotel::Reservation.all
     end
 
-    def reserve(room_number, start_date, end_date)
-      Hotel::Reservation.new(room_number, start_date, end_date)
+    def reserve(id, room_number, start_date, end_date)
+      Hotel::Reservation.new(id, room_number, start_date, end_date)
     end
 
     def retrieve_reservation(date)
