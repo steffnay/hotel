@@ -9,11 +9,12 @@ describe "Room class" do
 
   end
 
-  describe "add new" do
+  describe "self.update_room" do
     it "adds a new reservation for the room" do
-      a_room = Hotel::Room.new(9)
+      a_room = Hotel::Room.new(66)
+      new_reservation = Hotel::Reservation.new(66,"2020-02-24", "2020-02-28")
       before = a_room.reservations.length
-      a_room.add_new(800, 9, "2020-02-24", "2020-02-28")
+      Hotel::Room.update_room(66, new_reservation)
       after = a_room.reservations.length
       after.must_equal (before + 1)
     end

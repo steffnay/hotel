@@ -9,6 +9,11 @@ module Hotel
 
     @@array = []
 
+    def self.update_room(room_number, reservation)
+      reservation_info = @@array.select {|num| num[:room] == room_number}
+      reservation_info[0][:reservations] << reservation
+    end
+
     def initialize(number)
       @room_number = number
       @price = 200
@@ -19,15 +24,6 @@ module Hotel
       return @room_number
     end
 
-    def add_new(id, room, start_date, end_date)
-      newby = Hotel::Reservation.new(id, room, start_date, end_date)
-
-      reservation_info = @@array.select {|num| num[:room] == room}
-      binding.pry
-      reservation_info[0][:reservations] << newby
-      binding.pry
-
-    end
   end
 end
 #

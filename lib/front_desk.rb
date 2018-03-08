@@ -1,5 +1,7 @@
 require_relative '../lib/room.rb'
 require_relative '../lib/reservation.rb'
+require_relative '../lib/block_reservation.rb'
+require "awesome_print"
 
 module Hotel
   class FrontDesk
@@ -25,10 +27,9 @@ module Hotel
     def list
       list = []
       @room_array.each do |room|
-        number = "Room #{room.room_number}"
-      list << number
+        number = room.room_number
+        list << number
       end
-
       return list
     end
 
@@ -36,12 +37,87 @@ module Hotel
      Hotel::Reservation.all
     end
 
-    def reserve(id, room_number, start_date, end_date)
-      Hotel::Reservation.new(id, room_number, start_date, end_date)
+    def reserve_room(room_number, start_date, end_date, block_id = 0)
+      list = open_rooms(start_date, end_date)
+
+      unless list.include?(room_number) || block_id != 0
+        raise StandardError
+      end
+
+      newby = Hotel::Reservation.new(room_number, start_date, end_date, block_id)
+      Hotel::Room.update_room(room_number, newby)
+
+      return newby
     end
 
-    def retrieve_reservation(date)
-      Hotel::Reservation.get_by_date(date)
+    def total(id)
+      reservations = all_reservations
+      found = reservations.detect {|reservation| reservation.id == id}
+
+      length = found.end_date - found. start_date
+      total = length * 200.00
+      return total
+    end
+
+    def open_rooms(start_date, end_date)
+      sd = DateTime.parse(start_date)
+      ed = DateTime.parse(end_date)
+
+
+      reservations = all_reservations
+      open = []
+
+      all_reservations.each do |res|
+        if sd <= (res.end_date - 1) && res.start_date <= ed
+          number = res.room
+          @all_rooms.delete_if {|room| room.room_number == number}
+        end
+      end
+      @all_rooms.each do |rm|
+        open << rm.room_number
+      end
+
+      return open
+    end
+
+    def block_reservation(num_of_rooms, start_date, end_date)
+      options = open_rooms(start_date, end_date)
+      if num_of_rooms > options.length || num_of_rooms > 5
+        raise StandardError
+      else
+        selected_rooms = options[0..num_of_rooms]
+        selected_rooms.each do |room|
+          Hotel::Reservation.new(room, start_date, end_date)
+        end
+        blocky = Hotel::BlockReservation.new(num_of_rooms, selected_rooms, start_date, end_date)
+      end
+
+      return blocky
+    end
+
+    def reserve_block_room(block_id, room_number)
+      blockitt = Hotel::BlockReservation.find(block_id)
+      start_date = blockitt.start_date
+      end_date = blockitt.end_date
+
+      if blockitt.available_rooms.include?(room_number)
+        new_res = Hotel::Reservation.new(room_number, start_date, end_date, block_id)
+        Hotel::Room.update_room(room_number, new_res)
+      end
+
+        return new_res
     end
   end
 end
+#
+checking
+# steffany = Hotel::FrontDesk.new
+# i = 1
+# 17.times do
+#   steffany.reserve_room(i, "2018-03-07", "2018-03-20")
+#   i += 1
+# end
+#
+# steffany.block_reservation(2, "2018-03-07", "2018-03-20")
+# steffany.reserve_room(20, "2018-03-12", "2018-03-18")
+# ap steffany.reserve_block_room(11111, 20)

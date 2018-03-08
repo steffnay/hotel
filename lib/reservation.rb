@@ -5,15 +5,27 @@ require 'awesome_print'
 module Hotel
   class Reservation
 
-    attr_reader :id, :room, :start_date, :end_date
+    attr_reader :id, :room, :start_date, :end_date, :block_id
 
-    def initialize(id, room, start_date, end_date)
-      @id = id
+    @@number = 1
+
+    def initialize(room, start_date, end_date, block_id = 0)
+
+      @id = @@number
       @room = room
       @start_date = DateTime.parse(start_date)
       @end_date = DateTime.parse(end_date)
+      @block_id = block_id
+      @@number += 1
 
+      check_date
       make_new
+    end
+
+    def check_date
+      unless @end_date > @start_date
+        raise StandardError "INVALID DATE"
+      end
     end
 
     def make_new
@@ -39,14 +51,8 @@ module Hotel
     end
 
     def self.all
-        ObjectSpace.each_object(self).to_a
-      end
+      ObjectSpace.each_object(self).to_a
+    end
+
   end
 end
-
-new_reservation = Hotel::Reservation.new(100, 5,"2020-02-24", "2020-02-28")
-new_reservation2 = Hotel::Reservation.new(200, 3,"2020-02-23", "2020-02-26")
-
-# reservation_list = Hotel::Reservation.get_by_date("2020-02-25")
-
-ap Hotel::Reservation.all
