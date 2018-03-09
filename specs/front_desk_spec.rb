@@ -18,7 +18,9 @@ describe "Front Desk class" do
   describe "list rooms" do
     it "lists all the rooms in hotel" do
       desk = Hotel::FrontDesk.new
-      desk.list.must_include 2
+      desk.list.must_be_kind_of Array
+      desk.list[0].must_be_kind_of Hotel::Room
+      desk.list[19].must_be_kind_of Hotel::Room
     end
   end
 

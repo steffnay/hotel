@@ -54,12 +54,7 @@ module Hotel
     end
 
     def list
-      list = []
-      @room_array.each do |room|
-        number = room.room_number
-        list << number
-      end
-      return list
+      @room_array
     end
 
     # def all_res
