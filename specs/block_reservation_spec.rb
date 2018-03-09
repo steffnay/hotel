@@ -10,10 +10,11 @@ describe "Block Reservation class" do
     end
   end
 
-  describe "self.all" do
-    it "returns an array of all block reservations" do
-      new_block = Hotel::BlockReservation.new(3, [1,2,3], "2040-01-20", "2040-01-28")
-      Hotel::BlockReservation.all.must_be_kind_of Array
+
+
+  describe "self.find" do
+    it "raises exception if block doesn't exist" do
+      proc {Hotel::BlockReservation.find(7)}.must_raise StandardError
     end
   end
 

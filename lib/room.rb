@@ -24,6 +24,8 @@ module Hotel
       return @room_number
     end
 
+    
+
   end
 end
 #

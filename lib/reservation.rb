@@ -19,7 +19,6 @@ module Hotel
       @@number += 1
 
       check_date
-      make_new
     end
 
     def check_date
@@ -28,31 +27,24 @@ module Hotel
       end
     end
 
-    def make_new
-      reservation = [@id, @room, @start_date, @end_date]
-    end
+    # def self.get_by_date(date)
+    #   date = DateTime.parse(date)
+    #
+    #   all_reservations = self.all
+    #   all_instances = []
+    #
+    #   all_reservations.each do |reservation|
+    #     beginning = reservation.start_date
+    #     ending = reservation.end_date
+    #
+    #     date_range = (beginning..ending)
+    #       if date_range.cover?(date)
+    #         all_instances << reservation
+    #       end
+    #   end
+    #   return all_instances
+    # end
 
-    def self.get_by_date(date)
-      date = DateTime.parse(date)
-
-      all_reservations = self.all
-      all_instances = []
-
-      all_reservations.each do |reservation|
-        beginning = reservation.start_date
-        ending = reservation.end_date
-
-        date_range = (beginning..ending)
-          if date_range.cover?(date)
-            all_instances << reservation
-          end
-      end
-      return all_instances
-    end
-
-    def self.all
-      ObjectSpace.each_object(self).to_a
-    end
 
   end
 end

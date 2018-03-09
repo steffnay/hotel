@@ -80,6 +80,7 @@ describe "Front Desk class" do
       desk = Hotel::FrontDesk.new
       blockhead = desk.block_reservation(4, "2040-02-20", "2040-02-26")
       blockhead.must_be_kind_of Hotel::BlockReservation
+
       proc { desk.reserve_room(1, "2040-02-22", "2040-02-26") }.must_raise StandardError
     end
 
@@ -108,11 +109,25 @@ describe "Front Desk class" do
         steffany.reserve_room(i, "2018-03-07", "2018-03-20")
         i += 1
       end
-      steffany.block_reservation(2, "2018-03-07", "2018-03-20")
-      okay_res = steffany.reserve_block_room(11111, 20)
-
+      blocker = steffany.block_reservation(2, "2018-03-07", "2018-03-20")
+      rm_num = blocker.available_rooms[0]
+      okay_res = steffany.reserve_block_room(11111, rm_num)
       okay_res.must_be_kind_of Hotel::Reservation
-      proc { steffany.reserve_room(20, "2018-03-12", "2018-03-18")}.must_raise StandardError
+      proc { steffany.reserve_room(blocker.available_rooms[1], "2018-03-12", "2018-03-18")}.must_raise StandardError
+    end
+
+    it "raises an exception if block doesn't exist" do
+      proc { steffany.reserve_block_room(900000, 20)}.must_raise StandardError
+    end
+
+    describe "get by date" do
+      it "returns all reservations w/in a certain date range" do
+        admin = Hotel::FrontDesk.new
+        new_reservation = admin.reserve_room(5,"2020-02-24", "2020-02-28")
+
+        reservation_list = admin.get_by_date("2020-02-26")
+        reservation_list.must_include new_reservation
+      end
     end
   end
 end

@@ -34,6 +34,8 @@ module Hotel
           return number
         end
       end
+
+      raise StandardError "BLOCK NOT FOUND"
     end
   end
 end

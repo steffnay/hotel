@@ -7,9 +7,11 @@ module Hotel
   class FrontDesk
 
   attr_reader :all_rooms
+  attr_accessor :all_reservations
 
     def initialize
       @all_rooms = load_rooms
+      @all_reservations = []
     end
 
     def load_rooms
@@ -24,19 +26,6 @@ module Hotel
       return @room_array
     end
 
-    def list
-      list = []
-      @room_array.each do |room|
-        number = room.room_number
-        list << number
-      end
-      return list
-    end
-
-    def all_reservations
-     Hotel::Reservation.all
-    end
-
     def reserve_room(room_number, start_date, end_date, block_id = 0)
       list = open_rooms(start_date, end_date)
 
@@ -46,9 +35,55 @@ module Hotel
 
       newby = Hotel::Reservation.new(room_number, start_date, end_date, block_id)
       Hotel::Room.update_room(room_number, newby)
+      @all_reservations.push(newby)
 
       return newby
     end
+
+    def reserve_block_room(block_id, room_number)
+      blockitt = Hotel::BlockReservation.find(block_id)
+
+      start_date = blockitt.start_date
+      end_date = blockitt.end_date
+
+      if blockitt.available_rooms.include?(room_number)
+        new_res = Hotel::Reservation.new(room_number, start_date, end_date, block_id)
+        Hotel::Room.update_room(room_number, new_res)
+      end
+      return new_res
+    end
+
+    def list
+      list = []
+      @room_array.each do |room|
+        number = room.room_number
+        list << number
+      end
+      return list
+    end
+
+    # def all_res
+    #  return @all_reservations
+    # end
+
+    def get_by_date(date)
+      date = DateTime.parse(date)
+
+      all_instances = []
+
+      @all_reservations.each do |reservation|
+        beginning = reservation.start_date
+        ending = reservation.end_date
+        date_range = (beginning..ending)
+
+        if date_range.cover?(date)
+          all_instances << reservation
+        end
+      end
+      return all_instances
+    end
+
+
 
     def total(id)
       reservations = all_reservations
@@ -63,11 +98,9 @@ module Hotel
       sd = DateTime.parse(start_date)
       ed = DateTime.parse(end_date)
 
-
-      reservations = all_reservations
       open = []
 
-      all_reservations.each do |res|
+      @all_reservations.each do |res|
         if sd <= (res.end_date - 1) && res.start_date <= ed
           number = res.room
           @all_rooms.delete_if {|room| room.room_number == number}
@@ -85,7 +118,7 @@ module Hotel
       if num_of_rooms > options.length || num_of_rooms > 5
         raise StandardError
       else
-        selected_rooms = options[0..num_of_rooms]
+        selected_rooms = options[0...num_of_rooms]
         selected_rooms.each do |room|
           Hotel::Reservation.new(room, start_date, end_date)
         end
@@ -95,22 +128,29 @@ module Hotel
       return blocky
     end
 
-    def reserve_block_room(block_id, room_number)
-      blockitt = Hotel::BlockReservation.find(block_id)
-      start_date = blockitt.start_date
-      end_date = blockitt.end_date
+    def retrieve(date)
+      date =  DateTime.parse(date)
 
-      if blockitt.available_rooms.include?(room_number)
-        new_res = Hotel::Reservation.new(room_number, start_date, end_date, block_id)
-        Hotel::Room.update_room(room_number, new_res)
+      holder = []
+      @all_reservations.each do |res|
+        a = res.start_date
+        b = res.end_date
+        range = (a..b)
+
+        if range.cover?(date)
+          holder.push(res)
+        end
       end
-
-        return new_res
+      return holder
     end
+
+
+
+
   end
 end
 #
-checking
+# checking
 # steffany = Hotel::FrontDesk.new
 # i = 1
 # 17.times do
