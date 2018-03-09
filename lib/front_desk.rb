@@ -47,7 +47,7 @@ module Hotel
       end_date = blockitt.end_date
 
       if blockitt.available_rooms.include?(room_number)
-        new_res = Hotel::Reservation.new(room_number, start_date, end_date, block_id)
+        new_res = reserve_room(room_number, start_date, end_date, block_id)
         Hotel::Room.update_room(room_number, new_res)
       end
       return new_res
@@ -120,7 +120,7 @@ module Hotel
       else
         selected_rooms = options[0...num_of_rooms]
         selected_rooms.each do |room|
-          Hotel::Reservation.new(room, start_date, end_date)
+          reserve_room(room, start_date, end_date)
         end
         blocky = Hotel::BlockReservation.new(num_of_rooms, selected_rooms, start_date, end_date)
       end

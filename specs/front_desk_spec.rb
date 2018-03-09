@@ -79,9 +79,10 @@ describe "Front Desk class" do
     it "makes rooms in block unavailable to public" do
       desk = Hotel::FrontDesk.new
       blockhead = desk.block_reservation(4, "2040-02-20", "2040-02-26")
+      room = blockhead.available_rooms[0]
       blockhead.must_be_kind_of Hotel::BlockReservation
 
-      proc { desk.reserve_room(1, "2040-02-22", "2040-02-26") }.must_raise StandardError
+      proc { desk.reserve_room(room, "2040-02-22", "2040-02-26") }.must_raise StandardError
     end
 
     it "raises exception of there aren't enough open rooms" do
