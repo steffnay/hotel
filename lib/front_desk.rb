@@ -6,30 +6,36 @@ require "awesome_print"
 module Hotel
   class FrontDesk
 
-  attr_reader :all_rooms
-  attr_accessor :all_reservations
+  attr_reader :all_rooms, :all_reservations
 
     def initialize
       @all_rooms = load_rooms
       @all_reservations = []
+
+      load_rooms
     end
+
 
     def load_rooms
       @room_array = []
-
       20.times do |i|
         i+= 1
         room = Hotel::Room.new(i)
         @room_array << room
       end
-
       return @room_array
     end
 
-    def reserve_room(room_number, start_date, end_date, block_id = 0)
-      list = open_rooms(start_date, end_date)
 
-      unless list.include?(room_number) || block_id != 0
+    def list
+      @room_array
+    end
+
+
+    def reserve_room(room_number, start_date, end_date, block_id = 0)
+      room_list = open_rooms(start_date, end_date)
+
+      unless room_list.include?(room_number) || block_id != 0
         raise StandardError
       end
 
@@ -40,26 +46,20 @@ module Hotel
       return newby
     end
 
-    def reserve_block_room(block_id, room_number)
-      blockitt = Hotel::BlockReservation.find(block_id)
 
-      start_date = blockitt.start_date
-      end_date = blockitt.end_date
-
-      if blockitt.available_rooms.include?(room_number)
-        new_res = reserve_room(room_number, start_date, end_date, block_id)
-        Hotel::Room.update_room(room_number, new_res)
-      end
-      return new_res
+    def all_res
+     return @all_reservations
     end
 
-    def list
-      @room_array
+
+    def total(id)
+      found = @all_reservations.detect {|reservation| reservation.id == id}
+
+      length = found.end_date - found. start_date
+      total = length * 200.00
+      return total
     end
 
-    # def all_res
-    #  return @all_reservations
-    # end
 
     def get_by_date(date)
       date = DateTime.parse(date)
@@ -78,16 +78,6 @@ module Hotel
       return all_instances
     end
 
-
-
-    def total(id)
-      reservations = all_reservations
-      found = reservations.detect {|reservation| reservation.id == id}
-
-      length = found.end_date - found. start_date
-      total = length * 200.00
-      return total
-    end
 
     def open_rooms(start_date, end_date)
       sd = DateTime.parse(start_date)
@@ -108,6 +98,7 @@ module Hotel
       return open
     end
 
+
     def block_reservation(num_of_rooms, start_date, end_date)
       options = open_rooms(start_date, end_date)
       if num_of_rooms > options.length || num_of_rooms > 5
@@ -123,24 +114,19 @@ module Hotel
       return blocky
     end
 
-    def retrieve(date)
-      date =  DateTime.parse(date)
 
-      holder = []
-      @all_reservations.each do |res|
-        a = res.start_date
-        b = res.end_date
-        range = (a..b)
+    def reserve_block_room(block_id, room_number)
+      blockitt = Hotel::BlockReservation.find(block_id)
 
-        if range.cover?(date)
-          holder.push(res)
-        end
+      start_date = blockitt.start_date
+      end_date = blockitt.end_date
+
+      if blockitt.available_rooms.include?(room_number)
+        new_res = reserve_room(room_number, start_date, end_date, block_id)
       end
-      return holder
+
+      return new_res
     end
-
-
-
 
   end
 end

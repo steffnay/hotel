@@ -21,13 +21,17 @@ describe "Front Desk class" do
       desk.list.must_be_kind_of Array
       desk.list[0].must_be_kind_of Hotel::Room
       desk.list[19].must_be_kind_of Hotel::Room
+      desk.list[20].must_be_nil
     end
   end
 
   describe "all reservations" do
     it "returns an array of all current reservations" do
       desk = Hotel::FrontDesk.new
-      desk.all_reservations.must_be_kind_of Array
+      desk.reserve_room(1, "2030-01-01", "2030-01-02")
+      desk.all_res.must_be_kind_of Array
+      desk.all_res[0].must_be_kind_of Hotel::Reservation
+      desk.all_res[1].must_be_nil
     end
   end
 
@@ -37,12 +41,14 @@ describe "Front Desk class" do
       new_reservation = desk.reserve_room(1, "2020-04-24", "2020-04-28")
       new_reservation.must_be_kind_of Hotel::Reservation
       new_reservation.room.must_equal 1
-      new_reservation.id.must_be_kind_of Integer
+      proc { desk.reserve_room(21, "2019-09-28", "2019-10-02") }.must_raise StandardError
+      proc { desk.reserve_room(2, "2019-09-28", "2019-09-28") }.must_raise StandardError
+
     end
 
     it "raises an exception if try to reserve unavailable room" do
       desk = Hotel::FrontDesk.new
-      new_reservation = desk.reserve_room(1, "2020-05-24", "2020-05-28")
+      desk.reserve_room(1, "2020-05-24", "2020-05-28")
       proc { desk.reserve_room(1, "2020-05-27", "2020-05-30") }.must_raise StandardError
     end
   end
@@ -56,12 +62,22 @@ describe "Front Desk class" do
     end
   end
 
+  describe "get by date" do
+    it "returns all reservations w/in a certain date range" do
+      admin = Hotel::FrontDesk.new
+      new_reservation = admin.reserve_room(5,"2020-02-24", "2020-02-28")
+
+      reservation_list = admin.get_by_date("2020-02-26")
+      reservation_list.must_include new_reservation
+    end
+  end
+
   describe "open rooms" do
     it "returns a list of rooms not reserved between date range" do
       desk = Hotel::FrontDesk.new
-      new_reservation = desk.reserve_room(14, "2020-01-14", "2020-01-17")
-      new_reservation2 = desk.reserve_room(3, "2020-01-02", "2020-01-08")
-      new_reservation3 = desk.reserve_room(13, "2020-01-04", "2020-01-07")
+      desk.reserve_room(14, "2020-01-14", "2020-01-17")
+      desk.reserve_room(3, "2020-01-02", "2020-01-08")
+      desk.reserve_room(13, "2020-01-04", "2020-01-07")
 
       available = desk.open_rooms("2020-01-07", "2020-01-15")
       available.wont_include 14
@@ -75,7 +91,7 @@ describe "Front Desk class" do
       desk = Hotel::FrontDesk.new
       blockhead = desk.block_reservation(4, "2040-01-20", "2040-01-26")
       blockhead.must_be_kind_of Hotel::BlockReservation
-      blockhead.block_id.must_be_kind_of Integer
+      proc { desk.block_reservation(6, "2040-08-20", "2040-08-26") }.must_raise StandardError
     end
 
     it "makes rooms in block unavailable to public" do
@@ -83,7 +99,6 @@ describe "Front Desk class" do
       blockhead = desk.block_reservation(4, "2040-02-20", "2040-02-26")
       room = blockhead.available_rooms[0]
       blockhead.must_be_kind_of Hotel::BlockReservation
-
       proc { desk.reserve_room(room, "2040-02-22", "2040-02-26") }.must_raise StandardError
     end
 
@@ -116,21 +131,11 @@ describe "Front Desk class" do
       rm_num = blocker.available_rooms[0]
       okay_res = steffany.reserve_block_room(11111, rm_num)
       okay_res.must_be_kind_of Hotel::Reservation
-      proc { steffany.reserve_room(blocker.available_rooms[1], "2018-03-12", "2018-03-18")}.must_raise StandardError
+      proc { steffany.reserve_room(blocker.available_rooms[1], "2018-03-12", "2018-03-18") }.must_raise StandardError
     end
 
     it "raises an exception if block doesn't exist" do
-      proc { steffany.reserve_block_room(900000, 20)}.must_raise StandardError
-    end
-
-    describe "get by date" do
-      it "returns all reservations w/in a certain date range" do
-        admin = Hotel::FrontDesk.new
-        new_reservation = admin.reserve_room(5,"2020-02-24", "2020-02-28")
-
-        reservation_list = admin.get_by_date("2020-02-26")
-        reservation_list.must_include new_reservation
-      end
+      proc { steffany.reserve_block_room(900000, 20) }.must_raise StandardError
     end
   end
 end
