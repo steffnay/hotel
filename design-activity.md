@@ -28,3 +28,6 @@ Which implementation better adheres to the single responsibility principle?
   -Implementation B because it doesn't accumulate logic into one "high level" class, which is what happens in Implementation A.
 Bonus question once you've read Metz ch. 3: Which implementation is more loosely coupled?
   -Implementation B
+
+Revisiting Hotel
+  -One area where a class in my Hotel project manipulates the instance variables of another class is in FrontDesk#total method. To change this, I would need to create a method for calculating the total in Reservation and then call that method in FrontDesk.

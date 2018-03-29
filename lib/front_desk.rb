@@ -55,9 +55,7 @@ module Hotel
     def total(id)
       found = @all_reservations.detect {|reservation| reservation.id == id}
 
-      length = found.end_date - found. start_date
-      total = length * 200.00
-      return total
+      found.total
     end
 
 
@@ -130,15 +128,3 @@ module Hotel
 
   end
 end
-#
-# checking
-# steffany = Hotel::FrontDesk.new
-# i = 1
-# 17.times do
-#   steffany.reserve_room(i, "2018-03-07", "2018-03-20")
-#   i += 1
-# end
-#
-# steffany.block_reservation(2, "2018-03-07", "2018-03-20")
-# steffany.reserve_room(20, "2018-03-12", "2018-03-18")
-# ap steffany.reserve_block_room(11111, 20)

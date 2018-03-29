@@ -24,10 +24,8 @@ module Hotel
       return @room_number
     end
 
-    
+
+
 
   end
 end
-#
-# something = Hotel::Room.new(600)
-# ap something.add_new(600, "2020-02-24", "2020-02-28")

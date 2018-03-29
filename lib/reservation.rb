@@ -27,24 +27,11 @@ module Hotel
       end
     end
 
-    # def self.get_by_date(date)
-    #   date = DateTime.parse(date)
-    #
-    #   all_reservations = self.all
-    #   all_instances = []
-    #
-    #   all_reservations.each do |reservation|
-    #     beginning = reservation.start_date
-    #     ending = reservation.end_date
-    #
-    #     date_range = (beginning..ending)
-    #       if date_range.cover?(date)
-    #         all_instances << reservation
-    #       end
-    #   end
-    #   return all_instances
-    # end
+    def total
+      length_of_stay = @end_date - @start_date
+      reservation_total = length_of_stay * 200
 
-
+      return reservation_total
+    end
   end
 end
